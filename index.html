@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Preceptor - Comedor E.E.T. N°1</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-800 min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <img src="img/logoescuela.png" alt="Logo" class="w-12 h-12 rounded-full bg-gray-100 p-1">
+      <div class="text-2xl font-semibold">Comedor - E.E.T. N°1</div>
+    </div>
+
+    <!-- Flechita menú -->
+    <div class="relative">
+      <button id="preceptorBtn" class="p-1 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <!-- Menú desplegable -->
+      <div id="preceptorMenu" class="hidden absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-40">
+        <div class="px-4 py-3 border-b font-semibold">Preceptor Ejemplo</div>
+        <div class="flex flex-col">
+          <button id="btnModalReservar" class="text-left px-4 py-2 hover:bg-gray-50">Reservar lugar</button>
+          <button id="btnModalAgregar" class="text-left px-4 py-2 hover:bg-gray-50">Agregar alumno</button>
+          <button id="btnCerrarSesion" class="text-left px-4 py-2 hover:bg-gray-50">Cerrar sesión</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="flex-1 flex justify-center p-8">
+    <div class="w-full max-w-4xl">
+
+      <!-- Fecha actual -->
+      <div class="mb-4 text-gray-700 font-semibold text-lg">
+        Fecha: <span id="fechaHoy"></span>
+      </div>
+
+      <!-- Controles año / curso -->
+      <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-6 mb-6">
+        <div class="flex items-center justify-between flex-wrap gap-4">
+          <div class="flex items-center gap-2">
+            <button id="prevYear" class="px-2 py-1 bg-gray-100 rounded">◀ Año</button>
+            <div id="yearLabel" class="font-semibold">1°</div>
+            <button id="nextYear" class="px-2 py-1 bg-gray-100 rounded">Año ▶</button>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="prevCurso" class="px-2 py-1 bg-gray-100 rounded">◀ Curso</button>
+            <div id="cursoLabel" class="font-semibold">A</div>
+            <button id="nextCurso" class="px-2 py-1 bg-gray-100 rounded">Curso ▶</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de alumnos -->
+      <section class="bg-white border border-gray-200 rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold mb-4">Listado de alumnos</h3>
+        <div id="alumnosList" class="space-y-3 max-h-[60vh] overflow-y-auto"></div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- MODAL Reservar Lugar -->
+  <div id="modalReservar" class="fixed inset-0 hidden z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+    <div class="relative bg-white rounded-lg shadow-lg w-full max-w-md p-6 z-10">
+      <h4 class="text-lg font-semibold mb-3">Reservar lugar</h4>
+
+      <div class="space-y-3">
+        <div class="flex gap-2">
+          <select id="resYear" class="flex-1 border rounded px-2 py-1"></select>
+          <select id="resCurso" class="w-28 border rounded px-2 py-1"></select>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1">Tipo de servicio</label>
+          <select id="resTipo" class="w-full border rounded px-2 py-1">
+            <option>Desayuno</option>
+            <option>Almuerzo</option>
+            <option>Merienda</option>
+            <option>Cena</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1">Alumno</label>
+          <select id="resAlumno" class="w-full border rounded px-2 py-1"></select>
+        </div>
+
+        <div class="flex justify-end gap-2 mt-4">
+          <button id="cancelRes" class="px-4 py-2 border rounded">Cancelar</button>
+          <button id="confirmRes" class="px-4 py-2 bg-gray-800 text-white rounded">Reservar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL Agregar Alumno -->
+  <div id="modalAgregar" class="fixed inset-0 hidden z-50 flex items-center justify-center">
+    <div class="absolute inset-0 bg-black bg-opacity-30"></div>
+    <div class="relative bg-white rounded-lg shadow-lg w-full max-w-md p-6 z-10">
+      <h4 class="text-lg font-semibold mb-3">Agregar alumno</h4>
+
+      <div class="space-y-3">
+        <div class="flex gap-2">
+          <select id="addYear" class="flex-1 border rounded px-2 py-1"></select>
+          <select id="addCurso" class="w-28 border rounded px-2 py-1"></select>
+        </div>
+
+        <input id="addNombre" class="w-full border rounded px-3 py-2" placeholder="Nombre completo" />
+        <input id="addDNI" class="w-full border rounded px-3 py-2" placeholder="DNI" />
+        <input id="addEmail" class="w-full border rounded px-3 py-2" placeholder="Correo electrónico" />
+
+        <div class="flex justify-end gap-2 mt-4">
+          <button id="cancelAdd" class="px-4 py-2 border rounded">Cancelar</button>
+          <button id="confirmAdd" class="px-4 py-2 bg-green-600 text-white rounded">Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+
+
+
+
+
+
+
